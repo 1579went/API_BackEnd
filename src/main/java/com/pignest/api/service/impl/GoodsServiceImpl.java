@@ -4,15 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pignest.api.constant.CommonConstant;
 import com.pignest.api.exception.ThrowUtils;
-import com.pignest.api.mapper.TopUpMapper;
-import com.pignest.api.model.dto.interfaceInfo.InterfaceInfoQueryRequest;
-import com.pignest.api.model.dto.topUp.TopUpQueryRequest;
-import com.pignest.api.model.entity.TopUp;
-import com.pignest.api.service.TopUpService;
+import com.pignest.api.mapper.GoodsMapper;
+import com.pignest.api.model.dto.goods.GoodsQueryRequest;
+import com.pignest.api.model.entity.Goods;
+import com.pignest.api.service.GoodsService;
 import com.pignest.api.utils.SqlUtils;
 import com.pignest.api_common.common.ErrorCode;
 import com.pignest.api_common.exception.BusinessException;
-import com.pignest.api_common.model.entity.InterfaceInfo;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -23,17 +21,17 @@ import org.springframework.stereotype.Service;
 * @createDate 2024-01-11 14:21:51
 */
 @Service
-public class TopUpServiceImpl extends ServiceImpl<TopUpMapper, TopUp>
-    implements TopUpService {
+public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods>
+    implements GoodsService {
     @Override
-    public void validTopUp(TopUp topUp, boolean add) {
-        if (topUp == null) {
+    public void validGoods(Goods goods, boolean add) {
+        if (goods == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
 
-        String name = topUp.getName();
-        Double price = topUp.getPrice();
+        String name = goods.getName();
+        Long price = goods.getPrice();
         // 创建时，参数不能为空
         if (add) {
             ThrowUtils.throwIf(StringUtils.isAnyBlank(
@@ -47,15 +45,15 @@ public class TopUpServiceImpl extends ServiceImpl<TopUpMapper, TopUp>
     }
 
     @Override
-    public QueryWrapper<TopUp> getQueryWrapper(TopUpQueryRequest topUpQueryRequest) {
-        QueryWrapper<TopUp> queryWrapper = new QueryWrapper<>();
-        if (topUpQueryRequest == null) {
+    public QueryWrapper<Goods> getQueryWrapper(GoodsQueryRequest goodsQueryRequest) {
+        QueryWrapper<Goods> queryWrapper = new QueryWrapper<>();
+        if (goodsQueryRequest == null) {
             return queryWrapper;
         }
-        Long id = topUpQueryRequest.getId();
-        String name = topUpQueryRequest.getName();
-        String sortField = topUpQueryRequest.getSortField();
-        String sortOrder = topUpQueryRequest.getSortOrder();
+        Long id = goodsQueryRequest.getId();
+        String name = goodsQueryRequest.getName();
+        String sortField = goodsQueryRequest.getSortField();
+        String sortOrder = goodsQueryRequest.getSortOrder();
         queryWrapper.like(StringUtils.isNotBlank(name), "name", name)
                 .eq(ObjectUtils.isNotEmpty(id), "id", id)
                 .eq("is_delete", false)

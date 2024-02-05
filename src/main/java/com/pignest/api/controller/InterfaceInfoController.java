@@ -16,7 +16,7 @@ import com.pignest.api.model.dto.interfaceInfo.*;
 import com.pignest.api.service.InterfaceInfoService;
 import com.pignest.api.service.UserService;
 import com.pignest.api_client_sdk.client.API_Client;
-import com.pignest.api_client_sdk.service.impl.ApiServiceImpl;
+import com.pignest.api_client_sdk.service.ApiService;
 import com.pignest.api_common.common.BaseResponse;
 import com.pignest.api_common.common.ErrorCode;
 import com.pignest.api_common.common.ResultUtils;
@@ -59,7 +59,7 @@ public class InterfaceInfoController {
     private UserService userService;
 
     @Resource
-    private ApiServiceImpl apiService;
+    private ApiService apiService;
 
 
     // region 增删改查
@@ -313,19 +313,21 @@ public class InterfaceInfoController {
         }
         Map<String, Object> params = new Gson().fromJson(requestParams, new TypeToken<Map<String, Object>>() {
         }.getType());
-//        User loginUser = userService.getLoginUser(request);
-//        String accessKey = loginUser.getAccessKey();
-//        String secretKey = loginUser.getSecretKey();
+        User loginUser = userService.getLoginUser(request);
+        String accessKey = loginUser.getAccessKey();
+        String secretKey = loginUser.getSecretKey();
         String method = interfaceInfo.getMethod();
         try {
             String result = "";
             if(method.equals(GET)){
                 result = apiService
+                        .setApiClient(new API_Client(accessKey,secretKey))
                         .setUrl(interfaceInfo.getUrl())
                         .setRequestParams(params)
                         .get();
             }else if(method.equals(POST)){
                 result = apiService
+                        .setApiClient(new API_Client(accessKey,secretKey))
                         .setUrl(interfaceInfo.getUrl())
                         .setRequestParams(params)
                         .post();
@@ -335,7 +337,6 @@ public class InterfaceInfoController {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, e.getMessage());
         }
     }
-
     // endregion
 
 }

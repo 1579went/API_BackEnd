@@ -2,6 +2,7 @@ package com.pignest.api.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pignest.api.common.IDRequest;
+import com.pignest.api.model.dto.goods.TopUpRequest;
 import com.pignest.api_common.common.BaseResponse;
 import com.pignest.api.common.DeleteRequest;
 import com.pignest.api_common.model.entity.User;
@@ -290,4 +291,25 @@ public class UserController {
         return ResultUtils.success(true);
     }
 
+    /**
+     * 充值
+     *
+     * @param topUpRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/topUp")
+    public BaseResponse<Boolean> topUp(@RequestBody TopUpRequest topUpRequest,
+                                           HttpServletRequest request) {
+        if (topUpRequest == null || topUpRequest.getId() <= 0 || topUpRequest.getPigCoins() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        if(!Objects.equals(topUpRequest.getId(), loginUser.getId())){
+            throw new BusinessException(ErrorCode.OPERATION_ERROR,"登录用户与修改用户不一致！");
+        }
+        boolean result = userService.topUp(topUpRequest);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        return ResultUtils.success(true);
+    }
 }

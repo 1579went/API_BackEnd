@@ -88,5 +88,5 @@ dubbo:
     address: nacos://127.0.0.1:8848
 api:
   client:
-    access-key: asd
-    secret-key: asd
+    access-key: aUKeu57GjB38esJiWHdb
+    secret-key: 6C9mRYYMzINC7yoa0o6fvtJIN1J9seUgxUH7fNBS

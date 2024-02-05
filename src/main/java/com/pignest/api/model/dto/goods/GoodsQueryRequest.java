@@ -1,4 +1,4 @@
-package com.pignest.api.model.dto.topUp;
+package com.pignest.api.model.dto.goods;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -18,7 +18,7 @@ import java.util.Date;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class TopUpQueryRequest extends PageRequest implements Serializable {
+public class GoodsQueryRequest extends PageRequest implements Serializable {
 
     /**
      * 充值项目编号
@@ -39,7 +39,7 @@ public class TopUpQueryRequest extends PageRequest implements Serializable {
     /**
      * 价格
      */
-    private Double price;
+    private Long price;
 
     /**
      * 充值项目描述

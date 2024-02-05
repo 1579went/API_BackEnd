@@ -2,7 +2,6 @@ package com.pignest.api_gateway;
 
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.nacos.shaded.com.google.gson.Gson;
 import com.alibaba.nacos.shaded.com.google.gson.reflect.TypeToken;
 import com.pignest.api_client_sdk.utils.SignUtils;
@@ -16,6 +15,7 @@ import com.pignest.api_common.service.inner.InnerInterfaceInfoService;
 import com.pignest.api_common.service.inner.InnerUserInterfaceInvokeService;
 import com.pignest.api_common.service.inner.InnerUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.reactivestreams.Publisher;
@@ -23,18 +23,17 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import org.springframework.core.io.buffer.DataBufferFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -102,6 +101,11 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
         String timestamp = headers.getFirst(TIMESTAMP);
         String sign = headers.getFirst(SIGN);
         String nonce =  headers.getFirst(NONCE);
+        log.info("body："+body);
+        log.info("ACCESSKEY: "+accessKey);
+        log.info("TIMESTAMP: "+timestamp);
+        log.info("SIGN: "+sign);
+        log.info("NONCE: "+nonce);
         // 请求头中参数必须完整
         if (StringUtils.isAnyBlank(body, sign, accessKey, timestamp)) {
             throw new BusinessException(ErrorCode.FORBIDDEN_ERROR);
@@ -114,8 +118,8 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
         }
         try {
             UserVO user = innerUserService.getInvokeUserByAccessKey(accessKey);
-            if (user == null) {
-                throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "账号不存在");
+            if (ObjectUtils.isEmpty(user)){
+                throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "该秘钥对应的账号不存在，请检查秘钥是否有误，或去个人中心更新凭证");
             }
             // 校验accessKey
             if (!user.getAccessKey().equals(accessKey)) {
@@ -160,30 +164,18 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
             }
             // 校验请求参数
             String requestParams = interfaceInfo.getRequestParams();
-            List<RequestParamsField> list = new Gson().fromJson(requestParams, new TypeToken<List<RequestParamsField>>() {
-            }.getType());
-            List<String> fieldList = list.stream().map(RequestParamsField::getFieldName).sorted().toList();
-            List<String> bodyList = new ArrayList<>();
-            Objects.requireNonNull(JSON.parseObject(body)).forEach((key, val)->{
-                bodyList.add(key);
-            });
-            if(bodyList.stream().anyMatch(str -> !fieldList.contains(str))){
-                throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "请求参数有误,请查看文档后重新填写");
+            if(StringUtils.isNotBlank(requestParams)){
+                List<RequestParamsField> list = new Gson().fromJson(requestParams, new TypeToken<List<RequestParamsField>>() {
+                }.getType());
+                List<String> fieldList = list.stream().filter(requestParamsField -> "true".equals(requestParamsField.getRequired())).map(RequestParamsField::getFieldName).sorted().toList();
+                List<String> bodyList = new ArrayList<>();
+                Objects.requireNonNull(JSON.parseObject(body)).forEach((key, val)->{
+                    bodyList.add(key);
+                });
+                if(bodyList.size() < fieldList.size() || bodyList.stream().anyMatch(str -> !fieldList.contains(str))){
+                    throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "请求参数有误,请查看文档后重新填写");
+                }
             }
-
-//            if (StringUtils.isNotBlank(requestParams)) {
-//                List<RequestParamsField> list = new Gson().fromJson(requestParams, new TypeToken<List<RequestParamsField>>() {
-//                }.getType());
-//                List<RequestParamsField> requestParamsFieldList = new Gson().fromJson(body, new TypeToken<List<RequestParamsField>>() {
-//                }.getType());
-//                for (RequestParamsField requestParamsField : list) {
-//                    if ("是".equals(requestParamsField.getRequired())) {
-//                        if (StringUtils.isBlank(queryParams.getFirst(requestParamsField.getFieldName())) || !queryParams.containsKey(requestParamsField.getFieldName())) {
-//                            throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "请求参数有误，" + requestParamsField.getFieldName() + "为必选项，详细参数请参考API文档：https://doc.qimuu.icu/");
-//                        }
-//                    }
-//                }
-//            }
             return handleResponse(exchange, chain, user, interfaceInfo);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, e.getMessage());
@@ -224,10 +216,12 @@ public class GatewayGlobalFilter implements GlobalFilter, Ordered {
 //                                        }
 //                                    }, "接口调用失败");
                                     try {
-                                        boolean invoke =interfaceInvokeService.invoke(interfaceInfo.getId(), user.getId(),1);
-                                        if (!invoke) {
-                                            sink.error(new BusinessException(ErrorCode.OPERATION_ERROR, "接口调用失败"));
-                                            return;
+                                        synchronized (this){
+                                            boolean invoke =interfaceInvokeService.invoke(interfaceInfo.getId(), user.getId(),interfaceInfo.getCost());
+                                            if (!invoke) {
+                                                sink.error(new BusinessException(ErrorCode.OPERATION_ERROR, "接口调用失败"));
+                                                return;
+                                            }
                                         }
                                     } catch (Exception e) {
                                         log.error("invokeCount error", e);

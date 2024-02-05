@@ -5,11 +5,11 @@ import com.pignest.api.annotation.AuthCheck;
 import com.pignest.api.common.DeleteRequest;
 import com.pignest.api.constant.UserConstant;
 import com.pignest.api.exception.ThrowUtils;
-import com.pignest.api.model.dto.topUp.TopUpAddRequest;
-import com.pignest.api.model.dto.topUp.TopUpQueryRequest;
-import com.pignest.api.model.dto.topUp.TopUpUpdateRequest;
-import com.pignest.api.model.entity.TopUp;
-import com.pignest.api.service.TopUpService;
+import com.pignest.api.model.dto.goods.GoodsAddRequest;
+import com.pignest.api.model.dto.goods.GoodsQueryRequest;
+import com.pignest.api.model.dto.goods.GoodsUpdateRequest;
+import com.pignest.api.model.entity.Goods;
+import com.pignest.api.service.GoodsService;
 import com.pignest.api.service.UserService;
 import com.pignest.api_common.common.BaseResponse;
 import com.pignest.api_common.common.ErrorCode;
@@ -28,13 +28,13 @@ import org.springframework.web.bind.annotation.*;
  * @date 2024/1/11 15:36
  **/
 @RestController
-@RequestMapping("/api/topUp")
+@RequestMapping("/api/goods")
 @Slf4j
-public class TopUpController {
+public class GoodsController {
 
 
     @Resource
-    TopUpService topUpService;
+    GoodsService goodsService;
 
     @Resource
     private UserService userService;
@@ -49,21 +49,21 @@ public class TopUpController {
      * @return
      */
     @PostMapping("/add")
-    public BaseResponse<Long> addTopUp(@RequestBody TopUpAddRequest topUpAddRequest, HttpServletRequest request) {
+    public BaseResponse<Long> addGoods(@RequestBody GoodsAddRequest topUpAddRequest, HttpServletRequest request) {
         if (topUpAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        TopUp topUp = new TopUp();
+        Goods goods = new Goods();
         if(StringUtils.isBlank(topUpAddRequest.getAvatarUrl())){
-            topUp.setAvatarUrl("https://apply-1308809307.cos.ap-nanjing.myqcloud.com/top_up_avatar/%E6%9A%82%E6%97%A0%E6%95%B0%E6%8D%AE.png");
+            goods.setAvatarUrl("https://apply-1308809307.cos.ap-nanjing.myqcloud.com/top_up_avatar/%E6%9A%82%E6%97%A0%E6%95%B0%E6%8D%AE.png");
         }
-        BeanUtils.copyProperties(topUpAddRequest, topUp);
-        topUpService.validTopUp(topUp, true);
+        BeanUtils.copyProperties(topUpAddRequest, goods);
+        goodsService.validGoods(goods, true);
         User loginUser = userService.getLoginUser(request);
-        topUp.setCreateId(loginUser.getId());
-        boolean result = topUpService.save(topUp);
+        goods.setCreateId(loginUser.getId());
+        boolean result = goodsService.save(goods);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-        long id = topUp.getId();
+        long id = goods.getId();
         return ResultUtils.success(id);
     }
 
@@ -75,44 +75,44 @@ public class TopUpController {
      * @return
      */
     @PostMapping("/delete")
-    public BaseResponse<Boolean> deleteTopUp(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> deleteGoods(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User user = userService.getLoginUser(request);
         long id = deleteRequest.getId();
         // 判断是否存在
-        TopUp topUp = topUpService.getById(id);
-        ThrowUtils.throwIf(topUp == null, ErrorCode.NOT_FOUND_ERROR);
+        Goods goods = goodsService.getById(id);
+        ThrowUtils.throwIf(goods == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可删除
-        if (!topUp.getCreateId().equals(user.getId()) && userService.isNotAdmin(request)) {
+        if (!goods.getCreateId().equals(user.getId()) && userService.isNotAdmin(request)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
-        boolean b = topUpService.removeById(id);
+        boolean b = goodsService.removeById(id);
         return ResultUtils.success(b);
     }
 
     /**
      * 更新（仅管理员）
      *
-     * @param topUpUpdateRequest
+     * @param goodsUpdateRequest
      * @return
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> updateTopUp(@RequestBody TopUpUpdateRequest topUpUpdateRequest) {
-        if (topUpUpdateRequest == null || topUpUpdateRequest.getId() <= 0) {
+    public BaseResponse<Boolean> updateGoods(@RequestBody GoodsUpdateRequest goodsUpdateRequest) {
+        if (goodsUpdateRequest == null || goodsUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        TopUp topUp = new TopUp();
-        BeanUtils.copyProperties(topUpUpdateRequest, topUp);
+        Goods goods = new Goods();
+        BeanUtils.copyProperties(goodsUpdateRequest, goods);
         // 参数校验
-        topUpService.validTopUp(topUp, false);
-        long id = topUpUpdateRequest.getId();
+        goodsService.validGoods(goods, false);
+        long id = goodsUpdateRequest.getId();
         // 判断是否存在
-        TopUp oldTopUp = topUpService.getById(id);
-        ThrowUtils.throwIf(oldTopUp == null, ErrorCode.NOT_FOUND_ERROR);
-        boolean result = topUpService.updateById(topUp);
+        Goods oldGoods = goodsService.getById(id);
+        ThrowUtils.throwIf(oldGoods == null, ErrorCode.NOT_FOUND_ERROR);
+        boolean result = goodsService.updateById(goods);
         return ResultUtils.success(result);
     }
 
@@ -123,12 +123,12 @@ public class TopUpController {
      * @return
      */
     @GetMapping("/get")
-    public BaseResponse<TopUp> getTopUpById(long id) {
+    public BaseResponse<Goods> getGoodsById(long id) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        TopUp topUp = topUpService.getById(id);
-        return ResultUtils.success(topUp);
+        Goods goods = goodsService.getById(id);
+        return ResultUtils.success(goods);
 
     }
 
@@ -137,19 +137,19 @@ public class TopUpController {
     /**
      * 分页获取接口列表
      *
-     * @param topUpQueryRequest
+     * @param goodsQueryRequest
      * @param request
      * @return
      */
     @PostMapping("/list/page")
-    public BaseResponse<Page<TopUp>> listTopUpByPage(@RequestBody TopUpQueryRequest topUpQueryRequest,
-                                                                     HttpServletRequest request) {
-        long current = topUpQueryRequest.getCurrent();
-        long size = topUpQueryRequest.getPageSize();
+    public BaseResponse<Page<Goods>> listGoodsByPage(@RequestBody GoodsQueryRequest goodsQueryRequest,
+                                                     HttpServletRequest request) {
+        long current = goodsQueryRequest.getCurrent();
+        long size = goodsQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<TopUp> topUpPage = topUpService.page(new Page<>(current, size),
-                topUpService.getQueryWrapper(topUpQueryRequest));
+        Page<Goods> topUpPage = goodsService.page(new Page<>(current, size),
+                goodsService.getQueryWrapper(goodsQueryRequest));
         return ResultUtils.success(topUpPage);
     }
 }

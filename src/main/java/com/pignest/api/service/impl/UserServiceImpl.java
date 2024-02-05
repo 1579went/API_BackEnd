@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import com.pignest.api.common.IDRequest;
 import com.pignest.api.constant.CommonConstant;
 import com.pignest.api.constant.UserConstant;
+import com.pignest.api.model.dto.goods.TopUpRequest;
 import com.pignest.api.model.dto.user.UserQueryRequest;
 import com.pignest.api.model.entity.UserInterfaceInfo;
 import com.pignest.api_client_sdk.utils.KeyGenerator;
@@ -257,6 +258,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .eq(User::getId,idRequest.getId())
                 .set(User::getAccessKey,KeyGenerator.generateAccessKey())
                 .set(User::getSecretKey,KeyGenerator.generateSecretKey());
+        boolean result = update(userLambdaUpdateWrapper);
+        if(!result){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean topUp(TopUpRequest topUpRequest) {
+        LambdaUpdateWrapper<User> userLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        userLambdaUpdateWrapper
+                .eq(User::getId,topUpRequest.getId())
+                .setSql("pig_coins = pig_coins +" + topUpRequest.getPigCoins());
         boolean result = update(userLambdaUpdateWrapper);
         if(!result){
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);

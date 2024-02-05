@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
 import com.pignest.api.common.IDRequest;
+import com.pignest.api.model.dto.goods.TopUpRequest;
 import com.pignest.api.model.dto.user.UserQueryRequest;
 import com.pignest.api.model.vo.LoginUserVO;
 import com.pignest.api_common.model.entity.User;
@@ -100,5 +101,12 @@ public interface UserService extends IService<User> {
      * @return
      */
     Boolean updateKey(IDRequest idRequest);
+
+    /**
+     * 充值
+     * @param topUpRequest
+     * @return
+     */
+    Boolean topUp(TopUpRequest topUpRequest);
 
 }

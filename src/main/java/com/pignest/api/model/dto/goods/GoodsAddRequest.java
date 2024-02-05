@@ -1,4 +1,4 @@
-package com.pignest.api.model.dto.topUp;
+package com.pignest.api.model.dto.goods;
 
 import lombok.Data;
 
@@ -10,12 +10,7 @@ import java.io.Serializable;
  * @date 2024/1/11 15:42
  **/
 @Data
-public class TopUpUpdateRequest implements Serializable {
-
-    /**
-     * 充值项目编号
-     */
-    private Long id;
+public class GoodsAddRequest implements Serializable {
 
     /**
      * 充值项目名
@@ -30,7 +25,12 @@ public class TopUpUpdateRequest implements Serializable {
     /**
      * 价格
      */
-    private Double price;
+    private Long price;
+
+    /**
+     * 猪币
+     */
+    private Long pigCoins;
 
     /**
      * 充值项目描述
@@ -38,5 +38,5 @@ public class TopUpUpdateRequest implements Serializable {
     private String description;
 
     @Serial
-    private static final long serialVersionUID = 3913480262315382561L;
+    private static final long serialVersionUID = -3906909286963563992L;
 }

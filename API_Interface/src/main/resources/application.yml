@@ -3,5 +3,32 @@ server:
   port: 8952
 api:
   client:
-    access-key: 123
-    secret-key: shit
+    access-key: b
+    secret-key: d
+# 公共配置文件
+spring:
+  application:
+    name: API_Interface
+  # 默认 dev 环境
+  profiles:
+    active: dev
+  # 支持 swagger3
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  # session 配置
+  session:
+    # todo 取消注释开启分布式 session（须先配置 Redis）
+    # store-type: redis
+    # 30 天过期
+    timeout: 2592000
+  # 数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pig-nest
+    username: root
+    password: 147895263
+
+# 高德地图APIKEY
+weather:
+  apiKey: b5ec613d649378910e52fd1b55ea88b5

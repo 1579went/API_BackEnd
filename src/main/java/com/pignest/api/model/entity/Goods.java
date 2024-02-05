@@ -15,9 +15,9 @@ import java.util.Date;
  * @author Black
  * @TableName top_up
  */
-@TableName(value ="top_up")
+@TableName(value ="goods")
 @Data
-public class TopUp implements Serializable {
+public class Goods implements Serializable {
     /**
      * 充值项目编号
      */
@@ -37,7 +37,7 @@ public class TopUp implements Serializable {
     /**
      * 价格
      */
-    private Double price;
+    private Long price;
 
     /**
      * 充值项目描述
@@ -63,6 +63,11 @@ public class TopUp implements Serializable {
      * 更新时间
      */
     private Date updateTime;
+
+    /*
+     * 猪币
+     */
+    private Long pigCoins;
 
     @Serial
     @TableField(exist = false)

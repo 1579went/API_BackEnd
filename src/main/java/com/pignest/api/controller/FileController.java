@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import com.pignest.api.model.enums.ImageStatusEnum;
-import com.pignest.api.model.vo.ImageVo;
+import com.pignest.api.model.vo.ImageVO;
 import com.pignest.api_common.common.BaseResponse;
 import com.pignest.api.model.dto.file.UploadFileRequest;
 import com.pignest.api_common.model.entity.User;
@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 文件接口
  *
+ * @author Black
 
  */
 @RestController
@@ -52,11 +53,11 @@ public class FileController {
      * @return
      */
     @PostMapping("/upload")
-    public BaseResponse<ImageVo> uploadFile(@RequestPart("file") MultipartFile multipartFile,
-                                   UploadFileRequest uploadFileRequest, HttpServletRequest request) {
+    public BaseResponse<ImageVO> uploadFile(@RequestPart("file") MultipartFile multipartFile,
+                                            UploadFileRequest uploadFileRequest, HttpServletRequest request) {
         String biz = uploadFileRequest.getBiz();
         FileUploadBizEnum fileUploadBizEnum = FileUploadBizEnum.getEnumByValue(biz);
-        ImageVo imageVo = new ImageVo();
+        ImageVO imageVo = new ImageVO();
         if (fileUploadBizEnum == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -91,7 +92,7 @@ public class FileController {
             }
         }
     }
-    private BaseResponse<ImageVo> uploadError(ImageVo imageVo, MultipartFile multipartFile, String message) {
+    private BaseResponse<ImageVO> uploadError(ImageVO imageVo, MultipartFile multipartFile, String message) {
         imageVo.setName(multipartFile.getOriginalFilename());
         imageVo.setUid(RandomStringUtils.randomAlphanumeric(8));
         imageVo.setStatus(ImageStatusEnum.ERROR.getValue());

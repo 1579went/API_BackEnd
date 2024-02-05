@@ -12,5 +12,6 @@ public class RequestParamsField {
     private String fieldName;
     private String type;
     private String description;
+    private String value;
     private String required;
 }

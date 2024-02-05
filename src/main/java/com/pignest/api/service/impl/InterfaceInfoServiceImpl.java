@@ -1,31 +1,20 @@
 package com.pignest.api.service.impl;
 
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.pignest.api.mapper.InterfaceInfoMapper;
-import com.pignest.api.model.dto.interfaceInfo.InterfaceInfoAddRequest;
-import com.pignest.api.model.dto.interfaceInfo.InterfaceInfoQueryRequest;
-import com.pignest.api.model.dto.interfaceInfo.InterfaceInfoSearchRequest;
-import com.pignest.api.model.dto.interfaceInfo.InterfaceInfoUpdateRequest;
-import com.pignest.api_common.common.ErrorCode;
-import com.pignest.api_common.exception.BusinessException;
-import com.pignest.api_common.model.dto.RequestParamsField;
-import com.pignest.api_common.model.dto.ResponseParamsField;
-import com.pignest.api_common.model.entity.InterfaceInfo;
-import com.pignest.api.service.InterfaceInfoService;
-import com.pignest.api.utils.SqlUtils;
 import com.pignest.api.constant.CommonConstant;
 import com.pignest.api.exception.ThrowUtils;
-import com.pignest.api_common.model.entity.User;
-import jakarta.servlet.http.HttpServletRequest;
+import com.pignest.api.mapper.InterfaceInfoMapper;
+import com.pignest.api.model.dto.interfaceInfo.InterfaceInfoQueryRequest;
+import com.pignest.api.model.dto.interfaceInfo.InterfaceInfoSearchRequest;
+import com.pignest.api.service.InterfaceInfoService;
+import com.pignest.api.utils.SqlUtils;
+import com.pignest.api_common.common.ErrorCode;
+import com.pignest.api_common.exception.BusinessException;
+import com.pignest.api_common.model.entity.InterfaceInfo;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
 * @author Black
@@ -42,16 +31,14 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
-
         String name = interfaceInfo.getName();
         String description = interfaceInfo.getDescription();
-        String url = interfaceInfo.getUrl();
-        String requestParams = interfaceInfo.getRequestParams();
+        String responseParams = interfaceInfo.getResponseParams();
         String method = interfaceInfo.getMethod();
         // 创建时，参数不能为空
         if (add) {
             ThrowUtils.throwIf(StringUtils.isAnyBlank(
-                    name, description, url,requestParams,method), ErrorCode.PARAMS_ERROR);
+                    name, description,responseParams,method), ErrorCode.PARAMS_ERROR);
         }
         // 有参数则校验
         if (StringUtils.isNotBlank(name) && name.length() > 20) {
