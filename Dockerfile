@@ -1,6 +1,6 @@
 # Docker 镜像构建
 
-FROM maven:3.9.4-jdk-17-alpine as builder
+FROM maven:3.9.4-jdk-17-slim as builder
 
 # Copy local code to the container image.
 WORKDIR /app
