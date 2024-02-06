@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pignest.api_interface.mapper.WeatherMapMapper">
+
+    <resultMap id="BaseResultMap" type="com.pignest.api_interface.model.WeatherMap">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <id property="adCode" column="ad_code" jdbcType="INTEGER"/>
+            <result property="area" column="area" jdbcType="VARCHAR"/>
+            <result property="cityCode" column="city_code" jdbcType="INTEGER"/>
+            <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+            <result property="createId" column="create_id" jdbcType="BIGINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,ad_code,area,
+        city_code,is_delete,create_id,
+        create_time,update_time
+    </sql>
+</mapper>
