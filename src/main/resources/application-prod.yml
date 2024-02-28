@@ -20,9 +20,9 @@ spring:
   # todo 需替换配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://106.53.218.210:3306/pig-nest
-    username: went
-    password: 147895263
+    url: jdbc:mysql://
+    username:
+    password:
   # Redis 配置
   # todo 需替换配置，然后取消注释
   #  redis:
@@ -58,10 +58,10 @@ mybatis-plus:
 # 对象存储
 cos:
   client:
-    accessKey: AKIDm0FQdljYGnlcJrFQO8eEiLA2wsr3Maea
-    secretKey: 3ynV8e4LlI1jYJ7NXbX1StZO8maWRGxz
-    region: ap-nanjing
-    bucket: apply-1308809307
+    accessKey:
+    secretKey:
+    region:
+    bucket:
 # springdoc-openapi项目配置
 springdoc:
   swagger-ui:
@@ -87,8 +87,8 @@ dubbo:
     name: dubbo
     port: -1
   registry:
-    address: nacos://106.53.218.210:8848
+    address: nacos://
 api:
   client:
-    access-key: aUKeu57GjB38esJiWHdb
-    secret-key: 6C9mRYYMzINC7yoa0o6fvtJIN1J9seUgxUH7fNBS
+    access-key:
+    secret-key:

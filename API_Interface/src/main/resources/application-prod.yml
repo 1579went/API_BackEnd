@@ -3,8 +3,8 @@ server:
   port: 8952
 api:
   client:
-    access-key: 5Rhue2K5uExffP57s9d9
-    secret-key: LhF9KPa8dk9nz7CkfHXoHqHmXY9a40zJU4Jr5Wik
+    access-key:
+    secret-key:
 # 公共配置文件
 spring:
   application:
@@ -26,10 +26,10 @@ spring:
   # 数据库配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://106.53.218.210:3306/pig-nest
-    username: went
-    password: 147895263
+    url: jdbc:mysql://
+    username:
+    password:
 
 # 高德地图APIKEY
 weather:
-  apiKey: b5ec613d649378910e52fd1b55ea88b5
+  apiKey:
