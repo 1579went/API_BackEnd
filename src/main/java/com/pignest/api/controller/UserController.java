@@ -1,41 +1,30 @@
 package com.pignest.api.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.pignest.api.common.IDRequest;
-import com.pignest.api.model.dto.goods.TopUpRequest;
-import com.pignest.api_common.common.BaseResponse;
-import com.pignest.api.common.DeleteRequest;
-import com.pignest.api_common.model.entity.User;
-import com.pignest.api.model.vo.LoginUserVO;
 import com.pignest.api.annotation.AuthCheck;
+import com.pignest.api.common.DeleteRequest;
+import com.pignest.api.common.IDRequest;
 import com.pignest.api.constant.UserConstant;
-import com.pignest.api_common.exception.BusinessException;
 import com.pignest.api.exception.ThrowUtils;
-import com.pignest.api.model.dto.user.UserLoginRequest;
-import com.pignest.api.model.dto.user.UserQueryRequest;
-import com.pignest.api.model.dto.user.UserRegisterRequest;
-import com.pignest.api.model.dto.user.UserUpdateMyRequest;
-import com.pignest.api.model.dto.user.UserUpdateRequest;
+import com.pignest.api.model.dto.goods.TopUpRequest;
+import com.pignest.api.model.dto.user.*;
+import com.pignest.api.model.vo.LoginUserVO;
 import com.pignest.api.service.UserService;
-import java.util.List;
-import java.util.Objects;
-
+import com.pignest.api_common.common.BaseResponse;
 import com.pignest.api_common.common.ErrorCode;
 import com.pignest.api_common.common.ResultUtils;
+import com.pignest.api_common.exception.BusinessException;
+import com.pignest.api_common.model.entity.User;
 import com.pignest.api_common.model.vo.UserVO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 用户接口

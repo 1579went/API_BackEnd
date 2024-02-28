@@ -1,0 +1,26 @@
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: after_route
+          uri: http://106.53.218.210:8952
+          predicates:
+            - Path=/api/**
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: trace
+dubbo:
+  application:
+    name: API_Gateway
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://106.53.218.210:8848
+server:
+  address: 0.0.0.0
+  port: 8090

@@ -1,9 +1,7 @@
 package com.pignest.api_interface.controller;
 
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.google.gson.Gson;
-import com.pignest.api_client_sdk.service.ApiService;
+import icu.pignest.api_client_sdk.service.ApiService;
 import com.pignest.api_common.common.BaseResponse;
 import com.pignest.api_common.common.ErrorCode;
 import com.pignest.api_common.common.ResultUtils;
@@ -13,10 +11,7 @@ import com.pignest.api_interface.model.Encouragement;
 import com.pignest.api_interface.model.Flirt;
 import com.pignest.api_interface.model.sayWhat;
 import com.pignest.api_interface.model.vo.SentenceVO;
-import com.pignest.api_interface.service.DirtyJokeService;
-import com.pignest.api_interface.service.EncouragementService;
-import com.pignest.api_interface.service.FlirtService;
-import com.pignest.api_interface.service.WeatherMapService;
+import com.pignest.api_interface.service.*;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -46,8 +41,8 @@ public class InterfaceController {
     private EncouragementService encouragementService;
     @Resource
     private WeatherMapService weatherMapService;
-
-
+    @Resource
+    ThirdPartyInterfaceService thirdPartyInterfaceService;
     @GetMapping("/sayHi")
     public BaseResponse<String> sayHi(String name) {
         log.info("Hi~" + (name == null ? "" : name));
@@ -117,6 +112,15 @@ public class InterfaceController {
             return ResultUtils.error(ErrorCode.SYSTEM_ERROR);
         }
         return ResultUtils.success( res );
+    }
+
+    @GetMapping("/idioms")
+    public BaseResponse<Object> idioms(@RequestParam String query) {
+        return thirdPartyInterfaceService.query("idioms",query);
+    }
+    @GetMapping("/constellation")
+    public BaseResponse<Object> constellation(@RequestParam String query) {
+        return thirdPartyInterfaceService.query("constellation",query);
     }
 
     @PostMapping("/test")

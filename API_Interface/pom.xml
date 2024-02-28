@@ -63,7 +63,7 @@
             <version>3.5.4.1</version>
         </dependency>
         <dependency>
-            <groupId>com.pig-nest</groupId>
+            <groupId>icu.pig-nest</groupId>
             <artifactId>API_Client_SDK</artifactId>
             <version>0.0.1</version>
         </dependency>

@@ -4,7 +4,7 @@ package com.pignest.api_gateway;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.nacos.shaded.com.google.gson.Gson;
 import com.alibaba.nacos.shaded.com.google.gson.reflect.TypeToken;
-import com.pignest.api_client_sdk.utils.SignUtils;
+import icu.pignest.api_client_sdk.utils.SignUtils;
 import com.pignest.api_common.common.ErrorCode;
 import com.pignest.api_common.common.InterfaceStatusEnum;
 import com.pignest.api_common.exception.BusinessException;
@@ -38,8 +38,8 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static com.pignest.api_client_sdk.constant.SignConstant.*;
 import static com.pignest.api_common.common.UserRoleEnum.BAN;
+import static icu.pignest.api_client_sdk.constant.SignConstant.*;
 
 /**
  * @author Black

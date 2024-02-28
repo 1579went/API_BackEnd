@@ -14,7 +14,7 @@
 #CMD ["java","-jar","/app/target/API_BackEnd-0.0.1-SNAPSHOT.jar","--spring.profiles.active=prod"]
 
 # Docker 镜像构建(本地打包上传)
-FROM maven:3.8.4-openjdk-17-slim as builder
+FROM java:17
 # 作者
 MAINTAINER went
 # 添加jar到镜像并命名为user.jar

@@ -154,7 +154,7 @@
             <version>13.0</version>
         </dependency>
         <dependency>
-            <groupId>com.pig-nest</groupId>
+            <groupId>icu.pig-nest</groupId>
             <artifactId>API_Client_SDK</artifactId>
             <version>0.0.1</version>
         </dependency>
@@ -170,7 +170,6 @@
             <artifactId>cos_api</artifactId>
             <version>5.6.191</version>
         </dependency>
-
     </dependencies>
 
     <build>

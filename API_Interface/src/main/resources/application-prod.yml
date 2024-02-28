@@ -3,18 +3,16 @@ server:
   port: 8952
 api:
   client:
-    access-key: b
-    secret-key: d
+    access-key: 5Rhue2K5uExffP57s9d9
+    secret-key: LhF9KPa8dk9nz7CkfHXoHqHmXY9a40zJU4Jr5Wik
 # 公共配置文件
 spring:
   application:
     name: API_Interface
   # 默认 dev 环境
-#  profiles:
-#    active: dev
   config:
     activate:
-      on-profile: dev
+      on-profile: prod
   # 支持 swagger3
   mvc:
     pathmatch:
@@ -28,8 +26,8 @@ spring:
   # 数据库配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/pig-nest
-    username: root
+    url: jdbc:mysql://106.53.218.210:3306/pig-nest
+    username: went
     password: 147895263
 
 # 高德地图APIKEY
